@@ -2,6 +2,10 @@
 
 A smart, dynamic assistant platform designed to help individuals understand, track, and reduce their carbon footprint through contextual insights.
 
+## Live Demo
+
+🚀 **[View the Deployed Application Here](https://carbon-footprint-app-304612435021.us-central1.run.app/)**
+
 ## Overview
 
 This project was built for **[Challenge 3]**, focusing on providing a highly optimized, beautifully designed, and containerized solution. It uses a blazing-fast Python (FastAPI) backend, `uv` for dependency management, and integrates the **Google Gemini LLM** to act as a dynamic sustainability assistant.
