@@ -74,25 +74,25 @@
                             <!-- Insights injected here -->
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Chatbot UI -->
-            <button id="chatbot-toggle" aria-label="Toggle Chatbot">💬 Ask AI</button>
-            <div id="chatbot-window" class="hidden">
-                <div class="chatbot-header">
-                    <h3>Sustainability Chatbot</h3>
-                    <button id="chatbot-close" aria-label="Close Chatbot">&times;</button>
-                </div>
-                <div id="chatbot-messages">
-                    <div class="chat-message bot">
-                        Hi! I'm your sustainability assistant. Ask me anything about reducing your carbon footprint or the data you just submitted!
+                    <!-- Embedded Chatbot UI -->
+                    <button id="chatbot-toggle" aria-label="Toggle Chatbot">💬 Ask Follow-up Questions</button>
+                    <div id="chatbot-window" class="hidden">
+                        <div class="chatbot-header">
+                            <h3>Sustainability Chatbot</h3>
+                            <button id="chatbot-close" aria-label="Close Chatbot">&times;</button>
+                        </div>
+                        <div id="chatbot-messages">
+                            <div class="chat-message bot">
+                                Hi! I'm your sustainability assistant. Ask me anything about reducing your carbon footprint or the data you just submitted!
+                            </div>
+                        </div>
+                        <form id="chatbot-form">
+                            <input type="text" id="chatbot-input" placeholder="Type your message..." required autocomplete="off">
+                            <button type="submit" id="chatbot-send">Send</button>
+                        </form>
                     </div>
                 </div>
-                <form id="chatbot-form">
-                    <input type="text" id="chatbot-input" placeholder="Type your message..." required autocomplete="off">
-                    <button type="submit" id="chatbot-send">Send</button>
-                </form>
             </div>
         </main>
     </div>
