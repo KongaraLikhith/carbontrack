@@ -2,14 +2,23 @@ import os
 import google.generativeai as genai
 from .calculator import FootprintResult
 
-def get_insights(footprint: FootprintResult) -> str:
+async def get_insights(footprint: FootprintResult) -> str:
+    """
+    Calls the Gemini LLM asynchronously to generate personalized sustainability insights.
+
+    Args:
+        footprint (FootprintResult): The calculated footprint metrics.
+
+    Returns:
+        str: Markdown-formatted string containing practical reduction actions.
+    """
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key or api_key == "your_google_gemini_api_key_here":
         return "⚠️ **GEMINI_API_KEY is not set.** Cannot provide dynamic insights. Please add your key to the `.env` file and restart the server."
     
     try:
         genai.configure(api_key=api_key)
-        # Using gemini-1.5-flash for speed and efficiency as per instructions
+        # Using gemini-2.5-flash for speed and efficiency
         model = genai.GenerativeModel('gemini-2.5-flash') 
         
         prompt = f"""
@@ -24,12 +33,22 @@ def get_insights(footprint: FootprintResult) -> str:
         Format your response beautifully using Markdown with bolding and bullet points. Be encouraging and concise.
         """
         
-        response = model.generate_content(prompt)
+        response = await model.generate_content_async(prompt)
         return response.text
     except Exception as e:
         return f"**Error generating insights:** {str(e)}"
 
-def get_chat_response(message: str, history: list) -> str:
+async def get_chat_response(message: str, history: list[dict[str, str]]) -> str:
+    """
+    Processes a chat message asynchronously using the Gemini LLM.
+
+    Args:
+        message (str): The new user message.
+        history (list[dict[str, str]]): The conversation history formatted as role/content dicts.
+
+    Returns:
+        str: The AI's response text.
+    """
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key or api_key == "your_google_gemini_api_key_here":
         return "⚠️ **GEMINI_API_KEY is not set.**"
@@ -46,7 +65,7 @@ def get_chat_response(message: str, history: list) -> str:
         chat_session = model.start_chat(history=formatted_history)
         
         system_prompt = "You are a friendly, expert sustainability and carbon footprint assistant. Keep your answers concise, practical, and highly relevant."
-        response = chat_session.send_message(f"{system_prompt}\n\nUser: {message}")
+        response = await chat_session.send_message_async(f"{system_prompt}\n\nUser: {message}")
         return response.text
     except Exception as e:
         return f"**Error generating chat response:** {str(e)}"

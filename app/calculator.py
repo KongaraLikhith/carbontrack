@@ -1,18 +1,33 @@
 from pydantic import BaseModel
 
 class UserInputs(BaseModel):
+    """
+    Pydantic model representing the input data provided by the user.
+    """
     transport_miles_per_week: float
     mpg: float
     electricity_kwh_per_month: float
     diet_type: str # 'vegan', 'vegetarian', 'omnivore', 'heavy_meat'
 
 class FootprintResult(BaseModel):
+    """
+    Pydantic model representing the calculated footprint metrics.
+    """
     transport_co2_lbs: float
     energy_co2_lbs: float
     diet_co2_lbs: float
     total_co2_lbs: float
 
 def calculate_footprint(inputs: UserInputs) -> FootprintResult:
+    """
+    Calculates the monthly carbon footprint based on user inputs.
+
+    Args:
+        inputs (UserInputs): The structured user data from the frontend.
+
+    Returns:
+        FootprintResult: The calculated CO2 metrics in pounds.
+    """
     # Assumptions based on average EPA metrics:
     # 1 gallon of gasoline = ~19.6 lbs CO2
     if inputs.mpg > 0:
