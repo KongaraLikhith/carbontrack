@@ -10,7 +10,7 @@ def get_insights(footprint: FootprintResult) -> str:
     try:
         genai.configure(api_key=api_key)
         # Using gemini-1.5-flash for speed and efficiency as per instructions
-        model = genai.GenerativeModel('gemini-1.5-flash') 
+        model = genai.GenerativeModel('gemini-2.5-flash') 
         
         prompt = f"""
         The user has a monthly carbon footprint breakdown as follows:
