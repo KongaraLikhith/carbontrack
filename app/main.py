@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 
 from .calculator import UserInputs, calculate_footprint
-from .assistant import get_insights
+from .assistant import get_insights, get_chat_response
 
 load_dotenv()
 
@@ -25,6 +25,23 @@ def calculate_and_get_insights(inputs: UserInputs):
         "footprint": footprint.model_dump(),
         "insights": insights
     }
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    message: str
+    history: list[ChatMessage]
+
+class ChatResponse(BaseModel):
+    response: str
+
+@app.post("/api/chat", response_model=ChatResponse)
+def chat_with_assistant(request: ChatRequest):
+    history_dicts = [{"role": msg.role, "content": msg.content} for msg in request.history]
+    reply = get_chat_response(request.message, history_dicts)
+    return {"response": reply}
 
 # Ensure the static directory exists before mounting
 os.makedirs("app/static", exist_ok=True)

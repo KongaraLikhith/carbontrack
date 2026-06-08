@@ -28,3 +28,25 @@ def get_insights(footprint: FootprintResult) -> str:
         return response.text
     except Exception as e:
         return f"**Error generating insights:** {str(e)}"
+
+def get_chat_response(message: str, history: list) -> str:
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key or api_key == "your_google_gemini_api_key_here":
+        return "⚠️ **GEMINI_API_KEY is not set.**"
+
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        
+        formatted_history = []
+        for msg in history:
+            role = 'user' if msg['role'] == 'user' else 'model'
+            formatted_history.append({'role': role, 'parts': [msg['content']]})
+            
+        chat_session = model.start_chat(history=formatted_history)
+        
+        system_prompt = "You are a friendly, expert sustainability and carbon footprint assistant. Keep your answers concise, practical, and highly relevant."
+        response = chat_session.send_message(f"{system_prompt}\n\nUser: {message}")
+        return response.text
+    except Exception as e:
+        return f"**Error generating chat response:** {str(e)}"

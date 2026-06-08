@@ -58,3 +58,71 @@ document.getElementById('footprint-form').addEventListener('submit', async (e) =
         submitBtn.textContent = 'Calculate Footprint & Get Insights';
     }
 });
+
+// Chatbot Logic
+const chatToggle = document.getElementById('chatbot-toggle');
+const chatWindow = document.getElementById('chatbot-window');
+const chatClose = document.getElementById('chatbot-close');
+const chatForm = document.getElementById('chatbot-form');
+const chatInput = document.getElementById('chatbot-input');
+const chatMessages = document.getElementById('chatbot-messages');
+
+let chatHistory = [];
+
+chatToggle.addEventListener('click', () => {
+    chatWindow.classList.toggle('hidden');
+    chatToggle.classList.add('hidden');
+});
+
+chatClose.addEventListener('click', () => {
+    chatWindow.classList.add('hidden');
+    chatToggle.classList.remove('hidden');
+});
+
+function appendMessage(role, content) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('chat-message', role);
+    msgDiv.innerHTML = role === 'bot' ? marked.parse(content) : content;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    appendMessage('user', message);
+    chatInput.value = '';
+    
+    // Add typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.classList.add('chat-message', 'bot');
+    typingDiv.textContent = 'Thinking...';
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message, history: chatHistory })
+        });
+        
+        const data = await response.json();
+        
+        // Remove typing indicator
+        chatMessages.removeChild(typingDiv);
+        
+        if (response.ok) {
+            appendMessage('bot', data.response);
+            chatHistory.push({ role: 'user', content: message });
+            chatHistory.push({ role: 'bot', content: data.response });
+        } else {
+            appendMessage('bot', 'Error: Could not fetch response.');
+        }
+    } catch (err) {
+        chatMessages.removeChild(typingDiv);
+        appendMessage('bot', 'Error: Connection failed.');
+    }
+});
