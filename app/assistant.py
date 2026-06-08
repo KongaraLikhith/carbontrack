@@ -1,4 +1,7 @@
 import os
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning, module="google.generativeai")
+
 import google.generativeai as genai
 from .calculator import FootprintResult
 
@@ -62,7 +65,7 @@ async def get_chat_response(message: str, history: list[dict[str, str]]) -> str:
             role = 'user' if msg['role'] == 'user' else 'model'
             formatted_history.append({'role': role, 'parts': [msg['content']]})
             
-        chat_session = model.start_chat(history=formatted_history)
+        chat_session = model.start_chat(history=formatted_history)  # type: ignore
         
         system_prompt = "You are a friendly, expert sustainability and carbon footprint assistant. Keep your answers concise, practical, and highly relevant."
         response = await chat_session.send_message_async(f"{system_prompt}\n\nUser: {message}")
